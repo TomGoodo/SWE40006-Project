@@ -23,7 +23,7 @@ def create_app() -> Flask:
 
     @app.route("/")
     def hello():
-        return "Hello, Docker!"
+        return "Welcome to TasketCasket!"
 
     @app.route("/health")
     def health():

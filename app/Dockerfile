@@ -1,5 +1,10 @@
 FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim
 
+# This is for the metadata of the Container
+LABEL org.opencontainers.image.title="TasketCasket" \
+      org.opencontainers.image.description="TasketCasket Flask web app" \
+      org.opencontainers.image.source="https://github.com/TomGoodo/SWE40006-Project"
+
 WORKDIR /app
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
