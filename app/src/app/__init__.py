@@ -13,6 +13,7 @@ migrate = Migrate()
 
 def create_app() -> Flask:
     app = Flask(__name__)
+    app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "858fdb4feece1e32a6ed726fc6e3094472458b148c05a4db27")
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
         "DATABASE_URL", "sqlite:///dev.db"
     )
