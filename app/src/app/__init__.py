@@ -57,7 +57,7 @@ def create_app() -> Flask:
             db.create_all()
             row = DbCheck.query.filter_by(name="dummy").first()
             if row is None:
-                row = DbCheck(name="dummy", checks=0)
+                row = DbCheck(name="dummy", checks=0) # pyright: ignore[reportCallIssue]
                 db.session.add(row)
             row.checks += 1
             row.last_checked = datetime.now(UTC)
