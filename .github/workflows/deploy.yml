@@ -30,40 +30,40 @@ jobs:
           push: true
           tags: ${{ steps.image-name.outputs.image }}
 
-#  deploy-staging:
-#    needs: build
-#    runs-on: ubuntu-latest
-#    environment: staging
-#    permissions:
-#      contents: read
-#      packages: read
-#    steps:
-#      - uses: actions/checkout@v7
-#      - uses: appleboy/scp-action@v0.1.7
-#        with:
-#          host: ${{ secrets.SSH_HOST }}
-#          username: ${{ secrets.SSH_USER }}
-#          key: ${{ secrets.SSH_PRIVATE_KEY }}
-#          source: deploy/*
-#          target: /opt/app
-#          strip_components: 1
-#      - uses: appleboy/ssh-action@v1.2.0
-#        env:
-#          IMAGE: ${{ needs.build.outputs.image }}
-#          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-#          SECRET_KEY: ${{ secrets.SECRET_KEY }}
-#          APP_ENV: ${{ vars.APP_ENV }}
-#          GHCR_USER: ${{ github.actor }}
-#          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          host: ${{ secrets.SSH_HOST }}
-#          username: ${{ secrets.SSH_USER }}
-#          key: ${{ secrets.SSH_PRIVATE_KEY }}
-#          envs: IMAGE,DATABASE_URL,SECRET_KEY,APP_ENV,GHCR_USER,GHCR_TOKEN
-#          script: bash /opt/app/deploy.sh
-#      - name: Health check
-#        run: curl --fail --retry 10 --retry-delay 6 --retry-all-errors "${{ vars.APP_URL }}/health"
-#
+  deploy-staging:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: staging
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: deploy/*
+          target: /opt/app
+          strip_components: 1
+      - uses: appleboy/ssh-action@v1.2.0
+        env:
+          IMAGE: ${{ needs.build.outputs.image }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          APP_ENV: ${{ vars.APP_ENV }}
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: IMAGE,DATABASE_URL,SECRET_KEY,APP_ENV,GHCR_USER,GHCR_TOKEN
+          script: bash /opt/app/deploy.sh
+      - name: Health check
+        run: curl --fail --retry 10 --retry-delay 6 --retry-all-errors "${{ vars.APP_URL }}/health"
+
 #  deploy-production:
 #    needs: [build, deploy-staging]
 #    runs-on: ubuntu-latest
