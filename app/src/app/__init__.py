@@ -43,6 +43,11 @@ def create_app() -> Flask:
     db.init_app(app)
     migrate.init_app(app, db)
 
+    "Register the blueprint"
+    from .routes import task_bp
+
+    app.register_blueprint(task_bp)
+
     @app.route("/")
     def hello():
         return "Welcome to TasketCasket!"
