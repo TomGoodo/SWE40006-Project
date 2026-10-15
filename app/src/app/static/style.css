@@ -107,3 +107,33 @@ button:hover { opacity: 0.9; }
 .error { color: #9b1c1c; font-weight: 500; }
 .empty { color: var(--muted); }
 a { color: var(--navy); }
+
+
+.task-side { display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; }
+.task-side form { display: block; }
+
+.btn-small {
+  padding: 0.25rem 0.8rem;
+  font-size: 0.8rem;
+  color: var(--navy);
+  background: transparent;
+  border: 1.5px solid var(--navy);
+  border-radius: 999px;
+}
+.btn-small:hover { background: var(--navy); color: var(--cream); opacity: 1; }
+.task-complete strong { text-decoration: line-through; color: var(--muted); }
+
+
+/* ---- Status colors ---- */
+.status-pending     { background: #fdecc8; border-color: #b45309; color: #92400e; }
+.status-in_progress { background: var(--navy); border-color: var(--navy); color: var(--cream); }
+.status-complete    { background: #d9f0dc; border-color: #2f7d3b; color: #1f5f2b; }
+
+/* ---- Task action buttons ---- */
+.task-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.4rem; }
+.task-actions form { display: block; }
+a.btn-small { display: inline-block; text-decoration: none; }
+
+/* ---- Delete buttons ---- */
+.btn-delete { color: #9b1c1c; border-color: #9b1c1c; }
+.btn-delete:hover { background: #9b1c1c; color: var(--cream); }

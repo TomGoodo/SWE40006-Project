@@ -1,17 +1,46 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% macro status_button(task, value, label) %}
+  <form method="post" action="{{ url_for('tasks.set_status', task_id=task.id) }}">
+    <input type="hidden" name="status" value="{{ value }}">
+    <button type="submit" class="btn-small">{{ label }}</button>
+  </form>
+{% endmacro %}
+
 <h1>Tasks</h1>
 
 {% if tasks %}
   <ul class="task-list">
     {% for task in tasks %}
-      <li class="task">
+      <li class="task {{ 'task-complete' if task.status == 'complete' }}">
         <div>
           <strong>{{ task.title }}</strong>
           {% if task.description %}<p>{{ task.description }}</p>{% endif %}
         </div>
-        <span class="status status-{{ task.status }}">{{ task.status }}</span>
+
+        <div class="task-side">
+          <span class="status status-{{ task.status }}">{{ task.status_label }}</span>
+
+          <div class="task-actions">
+            {% if task.status == "pending" %}
+              {{ status_button(task, "in_progress", "Start") }}
+              {{ status_button(task, "complete", "Complete") }}
+            {% elif task.status == "in_progress" %}
+              {{ status_button(task, "complete", "Complete") }}
+              {{ status_button(task, "pending", "Pause") }}
+            {% else %}
+              {{ status_button(task, "pending", "Undo") }}
+            {% endif %}
+
+            <a class="btn-small" href="{{ url_for('tasks.edit_task', task_id=task.id) }}">Edit</a>
+
+            <form method="post" action="{{ url_for('tasks.delete_task', task_id=task.id) }}"
+                  onsubmit="return confirm('Delete this task?');">
+              <button type="submit" class="btn-small btn-delete">Delete</button>
+            </form>
+          </div>
+        </div>
       </li>
     {% endfor %}
   </ul>

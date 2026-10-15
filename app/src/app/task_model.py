@@ -6,6 +6,11 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from . import db
 
+STATUS_LABELS = {
+    "pending": "Pending",
+    "in_progress": "In progress",
+    "complete": "Complete",
+}
 
 class Task(db.Model):
     """Database model for a task."""
@@ -41,3 +46,7 @@ class Task(db.Model):
 
     def __repr__(self) -> str:
         return f"<Task {self.id}: {self.title} ({self.status} )>"
+
+    @property
+    def status_label(self) -> str:
+        return STATUS_LABELS.get(self.status, self.status)
