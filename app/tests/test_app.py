@@ -16,8 +16,17 @@ def test_health():
 
 
 def test_index():
-    client = create_app().test_client()
-    assert client.get("/").status_code == 200
+    app = create_app()
+
+    with app.app_context():
+        db.create_all()
+
+        client = app.test_client()
+        response = client.get("/")
+
+        assert response.status_code == 200
+
+        db.drop_all()
 
 
 def test_db_check(monkeypatch):
