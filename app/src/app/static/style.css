@@ -85,6 +85,12 @@ input, textarea, select {
 }
 input:focus, textarea:focus, select:focus { outline: 2px solid var(--navy); outline-offset: 2px; }
 
+.btn1 {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
 button, .btn {
   justify-self: start;
   padding: 0.6rem 1.4rem;
