@@ -1,9 +1,18 @@
-from flask import Blueprint, redirect, render_template, request, url_for, abort, jsonify, current_app
+from flask import (
+    Blueprint,
+    abort,
+    current_app,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
 
 from . import db
 from .task_model import STATUS_LABELS, Task
-from sqlalchemy import text
-
 
 task_bp = Blueprint("tasks", __name__)
 
@@ -84,7 +93,7 @@ def health():
     try:
         db.session.execute(text("SELECT 1"))
         database = "connected"
-    except Exception:
+    except SQLAlchemyError:
         db.session.rollback()
         database = "unreachable"
 

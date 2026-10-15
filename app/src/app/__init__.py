@@ -47,7 +47,6 @@ def create_app() -> Flask:
     migrate.init_app(app, db)
 
     "Register the blueprint"
-    from . import task_model
     from .routes import task_bp
 
     app.register_blueprint(task_bp)
