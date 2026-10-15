@@ -35,10 +35,9 @@
 
             <a class="btn-small" href="{{ url_for('tasks.edit_task', task_id=task.id) }}">Edit</a>
 
-            <form method="post" action="{{ url_for('tasks.delete_task', task_id=task.id) }}"
-                  onsubmit="return confirm('Delete this task?');">
-              <button type="submit" class="btn-small btn-delete">Delete</button>
-            </form>
+            <button type="button" class="btn-small btn-delete"
+            data-delete-url="{{ url_for('tasks.delete_task', task_id=task.id) }}"
+            data-task-title="{{ task.title }}">Delete</button>
           </div>
         </div>
       </li>
@@ -47,4 +46,34 @@
 {% else %}
   <p class="empty">No tasks yet. Click + to add one.</p>
 {% endif %}
+
+<dialog id="delete-dialog" class="modal">
+  <form method="post" id="delete-form">
+    <h2>Delete this task?</h2>
+    <p id="delete-title"></p>
+    <p class="muted">This can't be undone.</p>
+    <div class="modal-actions">
+      <button type="button" class="btn-small" id="delete-cancel">Cancel</button>
+      <button type="submit" class="btn-delete-solid">Delete</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+  const dialog = document.getElementById("delete-dialog");
+  const form = document.getElementById("delete-form");
+  const titleEl = document.getElementById("delete-title");
+
+  document.querySelectorAll("[data-delete-url]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      form.action = btn.dataset.deleteUrl;     
+      titleEl.textContent = btn.dataset.taskTitle;
+      dialog.showModal();
+    });
+  });
+
+  document.getElementById("delete-cancel").addEventListener("click", () => dialog.close());
+
+  dialog.addEventListener("click", (e) => { if (e.target === dialog) dialog.close(); });
+</script>
 {% endblock %}
