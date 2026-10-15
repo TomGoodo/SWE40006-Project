@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap');
+
+:root {
+  --cream: #e6decc;
+  --navy: #1b274e;
+  --ink: #1d1d1b;
+  --muted: #6d6a60;
+  --card: #fbf7ec;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "DM Sans", system-ui, sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+}
+
+h1, .logo {
+  font-family: "Syne", system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+main { max-width: 640px; margin: 1.5rem auto; padding: 0 1rem; }
+h1 { font-size: 2rem; font-weight: 700; margin: 0 0 1rem; }
+
+/* ---- Navbar ---- */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.9rem 1.25rem;
+  background: var(--navy);
+}
+.logo { color: white; font-size: 1.5rem; text-decoration: none; }
+.add-btn {
+  width: 2.3rem; height: 2.3rem; line-height: 2.1rem;
+  text-align: center; font-size: 1.6rem;
+  color: var(--navy); background: var(--cream);
+  border-radius: 50%; text-decoration: none;
+}
+.add-btn:hover { transform: scale(1.08); }
+
+/* ---- Task cards (outlined, rounded) ---- */
+.task-list { list-style: none; padding: 0; margin: 0; }
+.task {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  background: var(--card);
+  border: 1.5px solid var(--ink);
+  border-radius: 22px;
+  padding: 0.9rem 1.2rem;
+  margin-bottom: 0.75rem;
+}
+.task strong { font-weight: 700; }
+.task p { margin: 0.2rem 0 0; font-size: 0.85rem; color: var(--muted); }
+
+/* ---- Status badges ---- */
+.status {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.15rem 0.7rem;
+  border: 1.5px solid var(--navy);
+  border-radius: 999px;
+  color: var(--navy);
+  white-space: nowrap;
+}
+.status-in_progress { background: var(--navy); color: var(--cream); }
+.status-complete { border-color: var(--muted); color: var(--muted); }
+
+/* ---- Forms ---- */
+form { display: grid; gap: 0.6rem; }
+label { font-weight: 700; font-size: 0.9rem; }
+input, textarea, select {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  font: inherit;
+  background: var(--card);
+  border: 1.5px solid var(--ink);
+  border-radius: 18px;
+}
+input:focus, textarea:focus, select:focus { outline: 2px solid var(--navy); outline-offset: 2px; }
+
+button, .btn {
+  justify-self: start;
+  padding: 0.6rem 1.4rem;
+  font: inherit;
+  font-weight: 700;
+  color: white;
+  background: var(--navy);
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+button:hover { opacity: 0.9; }
+
+.error { color: #9b1c1c; font-weight: 500; }
+.empty { color: var(--muted); }
+a { color: var(--navy); }

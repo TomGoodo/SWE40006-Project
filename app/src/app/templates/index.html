@@ -1,32 +1,21 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>TasketCasket</title>
-</head>
-<body>
-  <h1>Welcome to TasketCasket! </h1>
-  <h3> Create a Task</h3>
+{% extends "base.html" %}
 
-  <form method="post" action="{{ url_for('tasks.create_task') }}">
-    <!-- Title input -->
-    <label for="title">Task title</label>
-    <input 
-      type="text" 
-      name="title" 
-      maxlength="200" 
-      required placeholder="Task title"
-    >
-    <br><br>
-    <label for="description">Description</label>
-    <textarea 
-      id="desc"
-      name="description" 
-      placeholder="Description">
-    </textarea>
-    <br><br>
-    <button type="submit">Add task</button>
-    
-  </form>
-</body>
-</html>
+{% block content %}
+<h1>Tasks</h1>
+
+{% if tasks %}
+  <ul class="task-list">
+    {% for task in tasks %}
+      <li class="task">
+        <div>
+          <strong>{{ task.title }}</strong>
+          {% if task.description %}<p>{{ task.description }}</p>{% endif %}
+        </div>
+        <span class="status status-{{ task.status }}">{{ task.status }}</span>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="empty">No tasks yet. Click + to add one.</p>
+{% endif %}
+{% endblock %}
