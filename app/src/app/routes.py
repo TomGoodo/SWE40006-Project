@@ -1,7 +1,9 @@
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import Blueprint, redirect, render_template, request, url_for, abort, jsonify, current_app
 
 from . import db
 from .task_model import STATUS_LABELS, Task
+from sqlalchemy import text
+
 
 task_bp = Blueprint("tasks", __name__)
 
@@ -75,3 +77,22 @@ def delete_task(task_id):
     db.session.delete(task)
     db.session.commit()
     return redirect(url_for("tasks.index"))
+
+
+@task_bp.route("/health")
+def health():
+    try:
+        db.session.execute(text("SELECT 1"))
+        database = "connected"
+    except Exception:
+        db.session.rollback()
+        database = "unreachable"
+
+    healthy = database == "connected"
+    body = {
+        "status": "ok" if healthy else "degraded",
+        "database": database,
+        "version": current_app.config["APP_VERSION"],
+        "environment": current_app.config["APP_ENV"],
+    }
+    return jsonify(body), (200 if healthy else 503)

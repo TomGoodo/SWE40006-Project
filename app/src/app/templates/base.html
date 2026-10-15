@@ -17,5 +17,11 @@
   <main>
     {% block content %}{% endblock %}
   </main>
+
+  <footer class="site-footer">
+  Version <code data-testid="app-version">{{ app_version }}</code>
+  &middot; Environment <code>{{ app_env }}</code>
+  &middot; <a href="{{ url_for('tasks.health') }}">Health</a>
+  </footer>
 </body>
 </html>
