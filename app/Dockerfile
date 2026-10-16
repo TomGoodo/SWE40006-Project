@@ -17,8 +17,10 @@ RUN uv sync --locked --no-install-project --no-dev
 # Then copy the source and install the project itself
 COPY README.md ./
 COPY src ./src
+COPY migrations ./migrations
 RUN uv sync --locked --no-dev
 
 EXPOSE 5000
 
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "app:create_app()"]
+# Apply database migrations once, then hand the process over to gunicorn
+CMD ["sh", "-c", "flask --app app db upgrade && exec gunicorn --bind 0.0.0.0:5000 --workers 2 'app:create_app()'"]
