@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Edit task{% endblock %}
+
+{% block content %}
+<h1>Edit task</h1>
+
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+
+<form method="post">
+  <label for="title">Title</label>
+  <input id="title" name="title" maxlength="200" required value="{{ task.title }}">
+
+  <label for="description">Description</label>
+  <textarea id="description" name="description" rows="3">{{ task.description or "" }}</textarea>
+
+  <label for="status">Status</label>
+  <select id="status" name="status">
+    {% for value, label in statuses.items() %}
+    {% if task.status == value %}
+        <option value="{{ value }}" selected>{{ label }}</option>
+    {% else %}
+        <option value="{{ value }}">{{ label }}</option>
+    {% endif %}
+    {% endfor %}
+  </select>
+
+    <div class="btn1">
+    <button type="submit">Save changes</button>
+    <a href="{{ url_for('tasks.index') }}">
+        <button type="button"> Cancel</button>
+    </a>
+</form>
+{% endblock %}

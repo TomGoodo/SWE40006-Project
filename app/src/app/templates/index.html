@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% macro status_button(task, value, label) %}
+  <form method="post" action="{{ url_for('tasks.set_status', task_id=task.id) }}">
+    <input type="hidden" name="status" value="{{ value }}">
+    <button type="submit" class="btn-small">{{ label }}</button>
+  </form>
+{% endmacro %}
+
+<h1>Tasks</h1>
+
+{% if tasks %}
+  <ul class="task-list">
+    {% for task in tasks %}
+      <li class="task {{ 'task-complete' if task.status == 'complete' }}">
+        <div>
+          <strong>{{ task.title }}</strong>
+          {% if task.description %}<p>{{ task.description }}</p>{% endif %}
+        </div>
+
+        <div class="task-side">
+          <span class="status status-{{ task.status }}">{{ task.status_label }}</span>
+
+          <div class="task-actions">
+            {% if task.status == "pending" %}
+              {{ status_button(task, "in_progress", "Start") }}
+              {{ status_button(task, "complete", "Complete") }}
+            {% elif task.status == "in_progress" %}
+              {{ status_button(task, "complete", "Complete") }}
+              {{ status_button(task, "pending", "Pause") }}
+            {% else %}
+              {{ status_button(task, "pending", "Undo") }}
+            {% endif %}
+
+            <a class="btn-small" href="{{ url_for('tasks.edit_task', task_id=task.id) }}">Edit</a>
+
+            <button type="button" class="btn-small btn-delete"
+            data-delete-url="{{ url_for('tasks.delete_task', task_id=task.id) }}"
+            data-task-title="{{ task.title }}">Delete</button>
+          </div>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p class="empty">No tasks yet. Click + to add one.</p>
+{% endif %}
+
+<dialog id="delete-dialog" class="modal">
+  <form method="post" id="delete-form">
+    <h2>Delete this task?</h2>
+    <p id="delete-title"></p>
+    <p class="muted">This can't be undone.</p>
+    <div class="modal-actions">
+      <button type="button" class="btn-small" id="delete-cancel">Cancel</button>
+      <button type="submit" class="btn-delete-solid">Delete</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+  const dialog = document.getElementById("delete-dialog");
+  const form = document.getElementById("delete-form");
+  const titleEl = document.getElementById("delete-title");
+
+  document.querySelectorAll("[data-delete-url]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      form.action = btn.dataset.deleteUrl;     
+      titleEl.textContent = btn.dataset.taskTitle;
+      dialog.showModal();
+    });
+  });
+
+  document.getElementById("delete-cancel").addEventListener("click", () => dialog.close());
+
+  dialog.addEventListener("click", (e) => { if (e.target === dialog) dialog.close(); });
+</script>
+{% endblock %}

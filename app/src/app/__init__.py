@@ -39,17 +39,28 @@ def create_app() -> Flask:
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
         "DATABASE_URL", "sqlite:///dev.db"
     )
+    "set by the pipeline in staging/production"
+    app.config["APP_VERSION"] = os.environ.get("APP_VERSION", "dev")
+    app.config["APP_ENV"] = os.environ.get("APP_ENV", "local")
 
     db.init_app(app)
     migrate.init_app(app, db)
 
-    @app.route("/")
+    "Register the blueprint"
+    from .routes import task_bp
+
+    app.register_blueprint(task_bp)
+
+    @app.context_processor
+    def inject_build_info():
+        return {
+            "app_version": app.config["APP_VERSION"],
+            "app_env": app.config["APP_ENV"],
+        }
+
+    @app.route("/hello")
     def hello():
         return "Welcome to TasketCasket!"
-
-    @app.route("/health")
-    def health():
-        return {"status": "ok"}
 
     @app.route("/db-check")
     def db_check():
