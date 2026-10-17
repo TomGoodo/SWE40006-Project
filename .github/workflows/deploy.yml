@@ -37,8 +37,24 @@ jobs:
     permissions:
       contents: read
       packages: read
+      id-token: write
     steps:
       - uses: actions/checkout@v7
+      - uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ap-southeast-2
+      - name: Get runner IP
+        id: runner-ip
+        run: echo "ipv4=$(curl -4 -fsS https://checkip.amazonaws.com)" >> "$GITHUB_OUTPUT"
+      - name: Allow runner SSH
+        id: allow-ssh
+        run: |
+          aws ec2 authorize-security-group-ingress \
+            --group-id "${{ vars.APP_SG_ID }}" \
+            --protocol tcp \
+            --port 22 \
+            --cidr "${{ steps.runner-ip.outputs.ipv4 }}/32"
       - uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -62,6 +78,14 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: IMAGE,DATABASE_URL,SECRET_KEY,APP_ENV,APP_VERSION,GHCR_USER,GHCR_TOKEN
           script: bash /opt/app/deploy.sh
+      - name: Remove runner SSH rule
+        if: always() && steps.allow-ssh.outcome == 'success'
+        run: |
+          aws ec2 revoke-security-group-ingress \
+            --group-id "${{ vars.APP_SG_ID }}" \
+            --protocol tcp \
+            --port 22 \
+            --cidr "${{ steps.runner-ip.outputs.ipv4 }}/32"
       - name: Health check
         run: curl --fail --retry 10 --retry-delay 6 --retry-all-errors "${{ vars.APP_URL }}/health"
 
@@ -72,8 +96,24 @@ jobs:
     permissions:
       contents: read
       packages: read
+      id-token: write
     steps:
       - uses: actions/checkout@v7
+      - uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ap-southeast-2
+      - name: Get runner IP
+        id: runner-ip
+        run: echo "ipv4=$(curl -4 -fsS https://checkip.amazonaws.com)" >> "$GITHUB_OUTPUT"
+      - name: Allow runner SSH
+        id: allow-ssh
+        run: |
+          aws ec2 authorize-security-group-ingress \
+            --group-id "${{ vars.APP_SG_ID }}" \
+            --protocol tcp \
+            --port 22 \
+            --cidr "${{ steps.runner-ip.outputs.ipv4 }}/32"
       - uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -97,5 +137,13 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: IMAGE,DATABASE_URL,SECRET_KEY,APP_ENV,APP_VERSION,GHCR_USER,GHCR_TOKEN
           script: bash /opt/app/deploy.sh
+      - name: Remove runner SSH rule
+        if: always() && steps.allow-ssh.outcome == 'success'
+        run: |
+          aws ec2 revoke-security-group-ingress \
+            --group-id "${{ vars.APP_SG_ID }}" \
+            --protocol tcp \
+            --port 22 \
+            --cidr "${{ steps.runner-ip.outputs.ipv4 }}/32"
       - name: Health check
         run: curl --fail --retry 10 --retry-delay 6 --retry-all-errors "${{ vars.APP_URL }}/health"
