@@ -6,5 +6,6 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       SECRET_KEY: ${SECRET_KEY}
       APP_ENV: ${APP_ENV}
+      APP_VERSION: ${APP_VERSION}
     ports:
       - "5000:5000"

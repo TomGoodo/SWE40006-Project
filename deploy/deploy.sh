@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Runs on the server. Expects IMAGE, DATABASE_URL, SECRET_KEY, APP_ENV,
-# GHCR_USER and GHCR_TOKEN in the environment (passed by the workflow).
+# APP_VERSION, GHCR_USER and GHCR_TOKEN in the environment (passed by the workflow).
 set -euo pipefail
 
 cd /opt/app
 
 echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
 
-export IMAGE DATABASE_URL SECRET_KEY APP_ENV
+export IMAGE DATABASE_URL SECRET_KEY APP_ENV APP_VERSION
 docker compose pull
 docker compose up -d --remove-orphans
 docker image prune -f
