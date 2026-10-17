@@ -178,3 +178,23 @@ jobs:
             --cidr "${{ steps.runner-ip.outputs.ipv4 }}/32"
       - name: Health check
         run: curl --fail --location --retry 10 --retry-delay 6 --retry-all-errors "${{ vars.APP_URL }}/health"
+      - name: Verify production is running this release
+        run: |
+          expected_version="${{ github.sha }}"
+          url="${{ vars.APP_URL }}/health"
+          for attempt in $(seq 1 10); do
+            body=$(curl -fsSL --max-time 10 "$url" || true)
+            echo "Attempt $attempt: $body"
+            status=$(echo "$body" | jq -r '.status // empty' 2>/dev/null || true)
+            database=$(echo "$body" | jq -r '.database // empty' 2>/dev/null || true)
+            version=$(echo "$body" | jq -r '.version // empty' 2>/dev/null || true)
+            environment=$(echo "$body" | jq -r '.environment // empty' 2>/dev/null || true)
+            if [ "$status" = "ok" ] && [ "$database" = "connected" ] \
+              && [ "$version" = "$expected_version" ] && [ "$environment" = "${{ vars.APP_ENV }}" ]; then
+              echo "Production verified: version $version, environment $environment, database $database"
+              exit 0
+            fi
+            sleep 6
+          done
+          echo "::error::Production did not report the expected release (version $expected_version, environment ${{ vars.APP_ENV }}, status ok, database connected)"
+          exit 1
