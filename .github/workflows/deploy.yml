@@ -88,7 +88,24 @@ jobs:
             --cidr "${{ steps.runner-ip.outputs.ipv4 }}/32"
       - name: Health check
         run: curl --fail --retry 10 --retry-delay 6 --retry-all-errors "${{ vars.APP_URL }}/health"
-
+        
+  e2e-staging:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    environment: staging
+    defaults:
+      run:
+        working-directory: app
+    env:
+      PYTEST_BASE_URL: ${{ vars.APP_URL }}
+      E2E_EXPECTED_ENV: ${{ vars.APP_ENV }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.2.0
+      - run: uv sync --frozen
+      - run: uv run playwright install --with-deps chromium
+      - run: uv run pytest tests/e2e -v
+      
   deploy-production:
     needs: [build, deploy-staging]
     runs-on: ubuntu-latest
