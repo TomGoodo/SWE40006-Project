@@ -1,27 +1,39 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}TasketCasket!{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=checklist" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=family_star" />
-</head>
-<body>
-  <nav class="navbar">
-    <a class="logo" href="{{ url_for('tasks.index') }}">Welcome to TasketCasket! <span class="material-symbols-outlined">family_star</span></a>
-    <a class="add-btn" href="{{ url_for('tasks.new_task') }}" title="Add task">+</a>
-  </nav>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}TasketCasket!{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=checklist"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=family_star"
+    />
+  </head>
+  <body>
+    <nav class="navbar">
+      <a class="logo" href="{{ url_for('tasks.index') }}"
+        >Welcome to Video Demonstration!
+        <span class="material-symbols-outlined">family_star</span></a
+      >
+      <a class="add-btn" href="{{ url_for('tasks.new_task') }}" title="Add task"
+        >+</a
+      >
+    </nav>
 
-  <main>
-    {% block content %}{% endblock %}
-  </main>
+    <main>{% block content %}{% endblock %}</main>
 
-  <footer class="site-footer">
-  Version <code data-testid="app-version">{{ app_version }}</code>
-  &middot; Environment <code>{{ app_env }}</code>
-  &middot; <a href="{{ url_for('tasks.health') }}">Health</a>
-  </footer>
-</body>
+    <footer class="site-footer">
+      Version <code data-testid="app-version">{{ app_version }}</code> &middot;
+      Environment <code>{{ app_env }}</code> &middot;
+      <a href="{{ url_for('tasks.health') }}">Health</a>
+    </footer>
+  </body>
 </html>
